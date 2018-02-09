@@ -1,7 +1,7 @@
-pipeline:
-	install:
-		image: node:8.6.0
-		commands:
-			- node -v
-			- npm -v
-			- npm install
+build:
+  image: node:8.6.0
+  commands:
+    - node -v
+    - npm -v
+    - npm install
+
