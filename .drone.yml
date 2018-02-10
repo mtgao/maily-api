@@ -11,6 +11,9 @@ pipeline:
     repo: swift-synthesis-194400/maily-api
     tags: latest
     secrets: [google_credentials]
+    tags: [latest, '${DRONE_TAG}']
+    when:
+      branch: master 
 
   deploy: 
     image: nytimes/drone-gke:0.7
