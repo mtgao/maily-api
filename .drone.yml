@@ -12,7 +12,7 @@ pipeline:
     tags: latest
     secrets:
     - source: google_credentials
-      target: token
+      target: json_key
     when:
       branch: master
 
