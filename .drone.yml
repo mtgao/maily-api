@@ -10,7 +10,9 @@ pipeline:
     image: plugins/gcr
     repo: swift-synthesis-194400/maily-api
     tags: latest
-    secrets: [google_credentials]
+    secrets:
+    - source: google_credentials
+      target: token
     when:
       branch: master
 
