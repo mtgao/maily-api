@@ -6,4 +6,28 @@ pipeline:
       - npm -v
       - npm install
 
+  publish:
+    image: plugins/gcr
+    repo: swift-synthesis-194400/maily-api
+    secrets: [google_credentials]
+    tags: latest
+    when:
+      branch: master
+      event: push 
+
+  deploy: 
+    image: nytimes/drone-gke:0.7
+    zone: us-central1-c
+    cluster: maily-cluster
+    namespace: ${DRONE_BRANCH}
+    secrets:
+    - source: google_credentials
+      target: token
+    vars:
+      image: gcr.io/swift-synthesis-194400/maily-api:latest
+      app: maily-api
+    when:
+      branch: master
+      event: push 
+
 
