@@ -33,12 +33,10 @@ pipeline:
     secrets:
     - source: google_credentials
       target: token
-    - source: postgres_password
-      target: pg_password 
     vars:
       app_image: gcr.io/swift-synthesis-194400/maily-api:latest
       postgres_image: gcr.io/swift-synthesis-194400/maily-postgres:latest
-      postgres_password: ${PG_PASSWORD}
+      postgres_password: postgres
       app: maily-api
     when:
       branch: master
