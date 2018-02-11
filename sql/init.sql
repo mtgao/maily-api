@@ -1,4 +1,3 @@
-ALTER USER postgres PASSWORD 'postgres';
 CREATE ROLE readonly PASSWORD 'readonly';
 REVOKE CREATE ON SCHEMA public FROM public;
 GRANT CREATE ON SCHEMA public TO postgres;
