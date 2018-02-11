@@ -6,15 +6,25 @@ pipeline:
       - npm -v
       - npm install
 
-  publish:
+  publish api:
     image: plugins/gcr
     repo: swift-synthesis-194400/maily-api
     secrets: [google_credentials]
     tags: latest
     when:
       branch: master
-      event: push 
+      event: push
 
+  publish postgres:
+    image: plugins/gcr
+    repo: swift-synthesis-194400/maily-postgres
+    dockerfile: docker/postgres.dockerfile
+    secrets: [google_credentials]
+    tags: latest
+    when:
+      branch: master
+      event: push
+    
   deploy: 
     image: nytimes/drone-gke:0.7
     zone: us-central1-c
@@ -23,11 +33,16 @@ pipeline:
     secrets:
     - source: google_credentials
       target: token
+    - source: postgres_password
+      target: pg_password 
     vars:
-      image: gcr.io/swift-synthesis-194400/maily-api:latest
+      app_image: gcr.io/swift-synthesis-194400/maily-api:latest
+      postgres_image: gcr.io/swift-synthesis-194400/maily-postgres:latest
+      postgres_password: $PG_PASSWORD
       app: maily-api
     when:
       branch: master
-      event: push 
+      event: push
+  
 
 

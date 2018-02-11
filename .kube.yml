@@ -1,9 +1,7 @@
-kind: Deployment
 apiVersion: extensions/v1beta1
-
+kind: Deployment
 metadata:
   name: {{.app}}
-
 spec:
   replicas: 1
   template:
@@ -13,17 +11,45 @@ spec:
     spec:
       containers:
         - name: app
-          image: {{.image}}
+          image: {{.app_image}}
           ports:
             - containerPort: 8000
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: {{.postgres_image}}
+          env:
+            - name: POSTGRES_PASSWORD
+              value: {{.postgres_password}}
+            - name: PGDATA 
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgres 
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+
 
 ---
-kind: Service
 apiVersion: v1
-
+kind: Service
 metadata:
   name: {{.app}}
-
 spec:
   type: LoadBalancer
   selector:
@@ -32,3 +58,29 @@ spec:
     - port: 80
       targetPort: 8000
       protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  type: LoadBalancer
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
