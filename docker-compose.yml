@@ -20,6 +20,10 @@ services:
       context: .
       dockerfile: Dockerfile 
     image: mtgao/maily-api
+    environment:
+        PGHOST: postgres
+        PGUSER: postgres 
+        PGPASSWORD: postgres
     restart: always
     ports:
       - 8000:8000
