@@ -1,21 +1,9 @@
 const http = require('http');
-const { Pool, Client } = require('pg')
+const db = require('./store/db');
 
-const pool = new Pool()
-
-pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle client', err)
-  process.exit(-1)
-})
-
-pool.query('SELECT * FROM accounts', (err, res) => {
-  if (err) {
-    throw err
-  }
-
-  console.log('User:', res.rows[0].user_name)
-})
-
+db.select().from('accounts').then(function(rows){
+    console.log(rows)
+});
 
 const hostname = '0.0.0.0';
 const port = 8000;
