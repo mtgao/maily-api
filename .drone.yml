@@ -11,6 +11,9 @@ pipeline:
     repo: swift-synthesis-194400/maily-api
     secrets: [google_credentials]
     tags: latest
+    when:
+      branch: master
+      event: push
 
   publish postgres:
     image: plugins/gcr
