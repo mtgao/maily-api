@@ -1,4 +1,6 @@
 const db = require('./store/db');
+const resolvers = require('./graphql/resolvers');
+const typeDefs = require('./graphql/schema');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
@@ -7,32 +9,6 @@ const { makeExecutableSchema } = require('graphql-tools');
 const hostname = '0.0.0.0';
 const port = 8000;
 
-
-// The GraphQL schema in string form
-const typeDefs = `
-  type Query { 
-    accounts: [Account] 
-  }
-  type Account { 
-    user_name: String, 
-    user_password: String 
-  }
-`;
-
-function findAccount(search) {
-  return db.select().from('accounts');
-}
-
-// The resolvers
-const resolvers = {
-  Query: { 
-    accounts: (_, {username}) => 
-      findAccount({ user_name: username }).then(
-        rows => rows
-      )
-  }
-};
-  
 // Put together a schema
 const schema = makeExecutableSchema({
   typeDefs,
