@@ -10,7 +10,7 @@ pipeline:
     image: plugins/gcr
     repo: swift-synthesis-194400/maily-api
     secrets: [google_credentials]
-    tags: latest
+    tags: ${DRONE_COMMIT}
     when:
       branch: master
       event: push
@@ -20,11 +20,11 @@ pipeline:
     repo: swift-synthesis-194400/maily-postgres
     dockerfile: docker/postgres.dockerfile
     secrets: [google_credentials]
-    tags: latest
+    tags: ${DRONE_COMMIT}
     when:
       branch: master
       event: push
-    
+          
   deploy: 
     image: nytimes/drone-gke:0.7
     zone: us-central1-c
@@ -34,8 +34,8 @@ pipeline:
     - source: google_credentials
       target: token
     vars:
-      app_image: gcr.io/swift-synthesis-194400/maily-api:latest
-      postgres_image: gcr.io/swift-synthesis-194400/maily-postgres:latest
+      app_image: gcr.io/swift-synthesis-194400/maily-api:${DRONE_COMMIT}
+      postgres_image: gcr.io/swift-synthesis-194400/maily-postgres:${DRONE_COMMIT}
       postgres_password: postgres
       app: maily-api
     when:
