@@ -5,7 +5,7 @@ const db = require('./db');
  * @param search - object for where parameter of query
  */
 function findAccount(search) {
-    if(typeof search.user_name != 'undefined') {
+    if(typeof search != 'undefined') {
         return db.select().from('accounts').where(search); 
     } else {
         return db.select().from('accounts');
