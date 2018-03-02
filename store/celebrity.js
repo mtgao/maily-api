@@ -1,5 +1,4 @@
 const db = require('./db');
-const { findMedia, createMedia } = require('./media');
 
 /**
  * @param db - database object
@@ -17,15 +16,7 @@ function findCelebrity(search) {
  * @param details - celebrity object to create 
  */
 function createCelebrity(details) {
-    if(typeof details.appearances != 'undefined') {
-        return createMedia(details.appearances).then(() => 
-            Promise.all(details.appearances.map(val => findMedia(val))).then((res) => {
-                details.appearances = JSON.stringify(res.map(val => ({'id': val[0].id.toString()})));
-                return db.insert(details).into('celebrity');
-            }))
-    } else {
-        return db.insert(details).into('celebrity');
-    }
+    return db.insert(details).into('celebrity');
 }
 
 

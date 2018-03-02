@@ -1,6 +1,6 @@
 const { findAccount, createAccount, updatePassword } = require('../store/account');
 const { findCelebrity, createCelebrity } = require('../store/celebrity');
-const { findMedia, createMedia } = require('../store/media');
+const { findMedia, createMedia, addCelebrityToMedia } = require('../store/media');
 
 const resolvers = {
     Query: {
@@ -14,16 +14,26 @@ const resolvers = {
             findMedia(args)
     },
     Celebrity: {
-        appearances: ( { appearances } ) => 
-            Promise.all(appearances.map(val => findMedia(val))).then(res => 
-                res.map(val => ({...val[0],}));
-            )
+        appearances: ( { appearances } ) => {
+            if(appearances) {
+                return Promise.all(appearances.map(val => findMedia(val))).then(res => {
+                    if (res) {
+                        return res.map(val => ({...val[0],}));
+                    }
+                })
+            }
+        }
     },
     Media: {
-        celebrities: ( { celebrities } ) => 
-            Promise.all(celebrities.map(val => findCelebrity(val))).then(res => 
-                res.map(val => ({...val[0],}));
-            )
+        celebrities: ( { celebrities } ) => {
+            if(celebrities) {
+                return Promise.all(celebrities.map(val => findCelebrity(val))).then(res => { 
+                    if(res) {
+                        return res.map(val => ({...val[0],}));
+                    }
+                })
+            }
+        }
     },
     Mutation: {
         createAccount: ( _, { input }) => 
@@ -39,7 +49,10 @@ const resolvers = {
         createCelebrity: ( _, { input }) => 
             createCelebrity(input).then(() => input),
         createMedia: ( _, { input }) => 
-            createMedia(input).then(() => input)
+            createMedia(input).then(() => input),
+        addCelebrityToMedia: ( _, { link, fullname_native, dob}) =>
+            addCelebrityToMedia(link, fullname_native, dob).then(() =>
+                findMedia({link: link}).then((res) => res[0]))
     }
 };
 

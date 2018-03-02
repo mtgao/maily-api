@@ -1,28 +1,14 @@
 const typeDefs = `
 
-    enum Gender {
-      male
-      female
-    }
-
-    enum Category {
-        interview
-        talk_show
-        commercial
-        variety_show
-        music_show
-        radio_show
-        television
-        movie
-        vlive
-        misc
-    }
-
     type Query {
         accounts(user_name: String): [Account]
-        celebrity(id: ID, 
-                  name: String, 
-                  gender: Gender,
+        celebrity(id: ID,
+                  firstname: String, 
+                  lastname: String,
+                  firstname_birth: String,
+                  lastname_birth: String,
+                  fullname_native: String,
+                  gender: String,
                   occupation: String,
                   nationality: String,
                   dob: String): [Celebrity]
@@ -30,7 +16,7 @@ const typeDefs = `
               name: String,
               description: String,
               link: String,
-              category: Category): [Media]
+              category: String): [Media]
     }
     
     type Account {
@@ -40,8 +26,12 @@ const typeDefs = `
 
     type Celebrity {
         id: ID,
-        name: String!,
-        gender: Gender,
+        firstname: String!, 
+        lastname: String!,
+        firstname_birth: String!,
+        lastname_birth: String!,
+        fullname_native: String!,
+        gender: String,
         occupation: String,
         nationality: String,
         dob: String,
@@ -53,7 +43,7 @@ const typeDefs = `
         name: String!,
         description: String,
         link: String!,
-        category: Category,
+        category: String,
         celebrities: [Celebrity]
     }
 
@@ -64,12 +54,15 @@ const typeDefs = `
 
     input CelebrityInput {
         id: ID,
-        name: String!,
+        firstname: String!, 
+        lastname: String!,
+        firstname_birth: String!,
+        lastname_birth: String!,
+        fullname_native: String!,
         gender: String,
         occupation: String,
         nationality: String,
-        dob: String,
-        appearances: [MediaInput]
+        dob: String
     }
 
     input MediaInput {
@@ -77,18 +70,16 @@ const typeDefs = `
         name: String!,
         description: String,
         link: String!,
-        category: Category,
-        celebrities: [CelebrityInput]
+        category: String
     }
 
     # Allow mutations
     type Mutation {
         createAccount(input: AccountInput): Account
         updatePassword(input: AccountInput): Account
-
         createCelebrity(input: CelebrityInput): Celebrity
-
         createMedia(input: MediaInput): Media
+        addCelebrityToMedia(link: String!, fullname_native: String!, dob: String!): Media
     }
 `;
 
