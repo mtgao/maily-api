@@ -80,6 +80,9 @@ const typeDefs = `
         createCelebrity(input: CelebrityInput): Celebrity
         createMedia(input: MediaInput): Media
         addCelebrityToMedia(link: String!, fullname_native: String!, dob: String!): Media
+        addMediaToCelebrity(fullname_native: String!, dob: String!, link: String!): Celebrity
+        removeMediaFromCelebrity(fullname_native: String!, dob: String!, link: String!): Celebrity
+        removeCelebrityFromMedia(link: String!, fullname_native: String!, dob: String!): Media
     }
 `;
 
