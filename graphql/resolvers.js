@@ -1,8 +1,9 @@
 const { 
-    findAccount, 
+    findAccount,
     createAccount, 
     updatePassword 
 } = require('../store/account');
+
 const { 
     findCelebrity, 
     createCelebrity, 
@@ -19,9 +20,7 @@ const {
 const resolvers = {
     Query: {
         accounts: ( _, { user_name } ) =>
-            findAccount({ 
-                user_name: user_name 
-            }),
+            findAccount({ user_name }),
         celebrity: ( _, args ) => 
             findCelebrity(args),
         media: ( _, args ) => 
@@ -29,38 +28,37 @@ const resolvers = {
     },
     Celebrity: {
         appearances: ( { appearances } ) => {
-            if(appearances) {
-                return Promise.all(appearances.map(val => findMedia(val))).then(res => {
-                    if (res) {
-                        return res.map(val => ({...val[0],}));
-                    }
-                })
+            if(!appearances) {
+                return [];
             }
+            return Promise.all(appearances.map(val => findMedia(val))).then(res => {
+                if (!res) {
+                    return [];
+                }
+                return res.map(val => ({...val[0],}));
+            })
         }
     },
     Media: {
         celebrities: ( { celebrities } ) => {
-            if(celebrities) {
-                return Promise.all(celebrities.map(val => findCelebrity(val))).then(res => { 
-                    if(res) {
-                        return res.map(val => ({...val[0],}));
-                    }
-                })
+            if(!celebrities) {
+                return [];
             }
+            return Promise.all(celebrities.map(val => findCelebrity(val))).then(res => { 
+                if(!res) {
+                    return [];
+                }
+                    return res.map(val => ({...val[0],}));        
+            })
+            
         }
     },
     Mutation: {
         createAccount: ( _, { input }) => 
-            createAccount(input).then(() => ({
-                    user_name: input.user_name,
-                    user_password: input.user_password
-             })),
+            createAccount(input).then(() => input),
 
         updatePassword: ( _, { input }) =>
-            updatePassword(input).then(() => ({
-                    user_name: input.user_name,
-                    user_password: input.user_password
-            })),
+            updatePassword(input).then(() => input),
             
         createCelebrity: ( _, { input }) => 
             createCelebrity(input).then(() => input),

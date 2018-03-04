@@ -37,16 +37,8 @@ function addMediaToCelebrity(fullname_native, dob, link) {
         return db.select().first().from('celebrity').where(unique_index).then((res) => {
             if(res.appearances) {
 
-                // check to see if our media Id already exists
-                var occurs = false;
-                for(var k in res.appearances) {
-                    if(res.appearances[k].id == id) {
-                      occurs = true;
-                    }
-                }
-
-                // if it doesn't, push a new element to our json array
-                if(!occurs) {
+                // if a media item doesn't exist, push a new element to json array
+                if(!res.appearances.map(val => val.id).includes(id)) {
                     res.appearances.push({'id': id.toString()});
                     return db.from('celebrity').where(unique_index).update({
                         appearances: JSON.stringify(res.appearances)
@@ -82,15 +74,12 @@ function removeMediaFromCelebrity(fullname_native, dob, link) {
         return db.select().first().from('celebrity').where(unique_index).then((res) => {
             if(res.appearances) {
 
+                res.appearances = res.appearances.filter(val => val.id != id);
+
                 // delete media by id in json array (if it exists)
-                for(var k in res.appearances) {
-                    if(res.appearances[k].id == id) {
-                        res.appearances.splice(k, 1);
-                        return db.from('celebrity').where(unique_index).update({
-                            appearances: JSON.stringify(res.appearances)
-                        });
-                    }
-                }
+                return db.from('celebrity').where(unique_index).update({
+                    appearances: JSON.stringify(res.appearances)
+                });
             } 
         });
     });

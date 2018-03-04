@@ -5,11 +5,11 @@ const db = require('./db');
  * @param search - object for where parameter of query
  */
 function findAccount(search) {
-    if(typeof search != 'undefined') {
-        return db.select().from('accounts').where(search); 
+    if(!search) {
+        return db.select().from('account');
     } else {
-        return db.select().from('accounts');
-    }
+        return db.select().from('accounts').where(search); 
+    } 
 }
 
 /**

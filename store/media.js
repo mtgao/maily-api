@@ -36,16 +36,8 @@ function addCelebrityToMedia(link, fullname_native, dob) {
         return db.select().first().from('media').where({link: link}).then((res) => {
             if(res.celebrities) {
 
-                // check to see if our celebrity Id already exists 
-                var occurs = false;
-                for(var k in res.celebrities) {
-                    if(res.celebrities[k].id == id) {
-                      occurs = true;
-                    }
-                }
-
-                // if it doesn't, push a new element to our json array
-                if(!occurs) {
+                // if celebrity item doesnt exist, add a new element to our json array
+                if(!res.appearances.map(val => val.id).includes(id)) {
                     res.celebrities.push({'id': id.toString()});
                     return db.from('media').where({link: link}).update({
                         celebrities: JSON.stringify(res.celebrities)
@@ -80,15 +72,12 @@ function removeCelebrityFromMedia(link, fullname_native, dob) {
         return db.select().first().from('media').where({link: link}).then((res) => {
             if(res.celebrities) {
 
+                res.celebrities = res.appearances.filter(val => val.id != id);
+
                 // delete media by id in json array (if it exists)
-                for(var k in res.celebrities) {
-                    if(res.celebrities[k].id == id) {
-                        res.celebrities.splice(k, 1);
-                        return db.from('media').where({link: link}).update({
+                return db.from('media').where({link: link}).update({
                             celebrities: JSON.stringify(res.celebrities)
-                        });
-                    }
-                }
+                });
             } 
         });
     });
