@@ -5,10 +5,10 @@ const db = require('./db');
  * @param search - object for where parameter of query
  */
 function findMedia(search) {
-    if(typeof search != 'undefined') {
-        return db.select().from('media').where(search);
-    } else {
+    if(!search) {
         return db.select().from('media');
+    } else {
+        return db.select().from('media').where(search);
     }
 }
 
