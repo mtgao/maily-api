@@ -3,16 +3,6 @@ CREATE TABLE IF NOT EXISTS accounts (
   user_password varchar(256)
 );
 
-CREATE TABLE IF NOT EXISTS celebrity (
-  id serial PRIMARY KEY,
-  name varchar(64),
-  occupation varchar(32),
-  nationality varchar(32),
-  dob date,
-  appearances jsonb
-);
-
-
 /* Define category enum */ 
 DO $$
 BEGIN
@@ -32,11 +22,28 @@ BEGIN
     END IF;
 END$$;
 
+
+CREATE TABLE IF NOT EXISTS celebrity (
+  id serial PRIMARY KEY, 
+  firstname varchar(16),
+  lastname varchar(16),
+  firstname_birth varchar(16),
+  lastname_birth varchar(16),
+  fullname_native varchar(32),
+  gender varchar(12),
+  occupation varchar(32),
+  nationality varchar(32),
+  dob date,
+  appearances jsonb,
+  unique (fullname_native, dob)
+);
+
+
 CREATE TABLE IF NOT EXISTS media (
   id serial PRIMARY KEY,
   name varchar(128),
   description varchar(128),
-  link varchar(256),
+  link varchar(256) unique,
   category categories,
   celebrities jsonb
 );
